@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <img src="" alt="Gallery Image" class="jumbo">
+        <div class="thumbnail" id="thumbnail-container">
+            <!-- Thumbnails will be added here dynamically -->
+        </div>
+    </div>
+
+    <script>
+        // Fetch images from the API
+        fetch('/api/images')
+            .then(response => response.json())
+            .then(images => {
+                const thumbnailContainer = document.getElementById('thumbnail-container');
+                const jumbo = document.querySelector('.jumbo');
+
+                images.forEach(image => {
+                    const img = document.createElement('img');
+                    img.src = image.url;
+                    img.alt = `Image ${image.id}`;
+                    img.className = 'thumb';
+                    thumbnailContainer.appendChild(img);
+
+                    // Set the jumbo image to the first thumbnail initially
+                    if (image.id === 1) jumbo.src = image.url;
+
+                    // Add click event for thumbnail
+                    img.addEventListener('click', () => {
+                        jumbo.src = img.src;
+                        jumbo.classList.add('fade');
+                        setTimeout(() => jumbo.classList.remove('fade'), 300);
+                    });
+                });
+            })
+            .catch(error => console.error('Error loading images:', error));
+    </script>
+</body>
+</html>
